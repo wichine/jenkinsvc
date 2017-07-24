@@ -6,6 +6,7 @@ import (
 )
 
 func init() {
+	beego.ErrorController(&controllers.ErrorController{})
 	beego.Router("/", &controllers.MainController{})
-	beego.Router("/test", &controllers.MainController{}, "*:Test")
+	beego.Router("/jenkins/getjobs", &controllers.JenkinsController{}, "*:GetJobs")
 }
