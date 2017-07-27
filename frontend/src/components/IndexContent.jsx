@@ -40,11 +40,11 @@ class IndexContent extends React.Component {
     wrapContent(value,index) {
         const colors = ["cyan","purple","yellow","green","red","blue","pink","orange"];
         return (
-            <Row key={index} style={{padding:"8px 0 8px 0"}}>
+            <Row key={index} style={{padding:"8px 0"}}>
                 <Col span={24}>
                     <ColorfulCard 
                         title = {value.title ? value.title : ""}
-                        content = {value.content ? value.content : ""}
+                        content = {value.description ? value.description : ""}
                         color = {colors[index % 8]}
                     />
                 </Col>
