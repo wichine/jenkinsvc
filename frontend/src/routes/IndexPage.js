@@ -10,17 +10,22 @@ const { Header, Content, Footer, Sider } = Layout;
 
 const inter = {
   "new":"新增",
-  "title":"所有项目"
+  "title":"所有项目",
+  "search":"输入项目名过滤..."
 }
 
-function IndexPage() {
+function IndexPage(props) {
+  let dataDisplay = props.projectsDisp;
+  const onSearch = (value) => {
+    props.dispatch({type:"indexPage/filter",value:value});
+  };
   return (
     <Layout style={{height:"100%"}}>
       <Header className={styles.header}>
         <Row>
             <Col span={12}><span style={{color:"#fff",fontSize:20,fontWeight:"600px"}}>{inter.title}</span></Col>
             <Col span={12} style={{textAlign:"right"}}>
-              <Input suffix={<Icon type="search"/>} style={{width:"50%",margin:"0"}}/>
+              <Input.Search onSearch={onSearch} placeholder={inter.search} style={{width:"50%",margin:"0"}}/>
               <Button ghost={true} style={{border:0,margin:"0 0 0 10px"}}>{inter.new}</Button>
             </Col>
         </Row>
@@ -28,7 +33,7 @@ function IndexPage() {
 
       <Content className={styles.content}>
         <Row type="flex" justify="center" align="middle" style={{height:"100%"}}>
-          <IndexContent />
+          <IndexContent data={dataDisplay}/>
         </Row>
       </Content>
 
@@ -40,4 +45,9 @@ function IndexPage() {
 IndexPage.propTypes = {
 };
 
-export default connect()(IndexPage);
+function mapStateToProps({indexPage}) {
+  return {...indexPage};
+}
+
+export default connect(mapStateToProps)(IndexPage);
+

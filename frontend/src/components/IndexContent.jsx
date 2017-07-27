@@ -3,6 +3,10 @@ import { Card, Col, Row, Button, Icon } from 'antd';
 
 import IconSvg from './IconSvg'
 
+const inter = {
+    "nothing":"没有发现项目呦~~ 点击“新增”添加"
+}
+
 const ColorfulCard = (props) => {
     const color = {
         "red":{"title":"#f04134","body":"#fcdbd9"},
@@ -50,9 +54,9 @@ class IndexContent extends React.Component {
 	render() {
 		return (
             <div style={{ background: '#ECECEC', padding: '30px',width:"100%",height:"100%",overflow:"auto" }}>
-                {(mockData.length>0) ? mockData.map(this.wrapContent) : <div>
+                {(this.props.data.length>0) ? this.props.data.map(this.wrapContent) : <div>
                     <Row style={{textAlign:"center"}}><IconSvg iconName="icon-kong" color="#bfbfbf" fontSize="128px" /></Row>
-                    <Row style={{color:"#919191",textAlign:"center"}}>没有发现项目呦~~ 点击“新增”添加</Row>
+                    <Row style={{color:"#919191",textAlign:"center"}}>{inter.nothing}</Row>
                 </div>}
             </div>
 		);
@@ -61,21 +65,3 @@ class IndexContent extends React.Component {
 
 export default IndexContent;
 
-
-const mockData = [
-    {"title":"Card title","content":"Card content card content\ntest test test!"},
-    {"title":"Card title","content":"Card content card content\ntest test test!"},
-    {"title":"Card title","content":"Card content card content\ntest test test!"},
-    // {"title":"Card title","content":"Card content card content\ntest test test!"},
-    // {"title":"Card title","content":"Card content card content\ntest test test!"},
-    // {"title":"Card title","content":"Card content card content\ntest test test!"},
-    // {"title":"Card title","content":"Card content card content\ntest test test!"},
-    // {"title":"Card title","content":"Card content card content\ntest test test!"},
-    // {"title":"Card title","content":"Card content card content\ntest test test!"},
-    // {"title":"Card title","content":"Card content card content\ntest test test!"},
-    // {"title":"Card title","content":"Card content card content\ntest test test!"},
-    // {"title":"Card title","content":"Card content card content\ntest test test!"},
-    // {"title":"Card title","content":"Card content card content\ntest test test!"},
-    // {"title":"Card title","content":"Card content card content\ntest test test!"},
-    // {"title":"Card title","content":"Card content card content\ntest test test!"}
-];
