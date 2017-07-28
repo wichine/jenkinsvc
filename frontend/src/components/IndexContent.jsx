@@ -34,13 +34,13 @@ const ColorfulCard = (props) => {
 
 
 class IndexContent extends React.Component {
-    onClick() {
+    onClick = () => {
         console.log("clicked");
     };
-    wrapContent(value,index) {
+    wrapContent = (value,index) => {
         const colors = ["cyan","purple","yellow","green","red","blue","pink","orange"];
         return (
-            <Row key={index} style={{padding:"8px 0"}}>
+            <Row key={index} style={{padding:"8px 0",cursor:"pointer"}} onClick={this.onClick} >
                 <Col span={24}>
                     <ColorfulCard 
                         title = {value.title ? value.title : ""}

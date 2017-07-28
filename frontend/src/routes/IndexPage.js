@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Layout, Menu, Row, Col, Input, Button } from 'antd';
+import { Layout, Row, Col, Input, Button } from 'antd';
 import IconSvg from '../components/IconSvg';
 import NewProjectModal from '../components/NewProjectModal';
 
