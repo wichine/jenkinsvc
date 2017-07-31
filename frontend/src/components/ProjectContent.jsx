@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table,Tabs,Card,Badge,Tag,Button,Dropdown,Menu,Icon } from 'antd';
+import { Table,Tabs,Card,Badge,Tag,Button,Dropdown,Menu,Icon,Input } from 'antd';
 import Markdown from 'react-markdown';
 import styles from './ProjectContent.less'
 
@@ -20,7 +20,8 @@ const inter = {
     "undefined":"未知",
     "new":"新建",
     "build":"构建",
-    "download":"下载"
+    "download":"下载",
+    "untag":"未标记"
 }
 
 const TabPane = Tabs.TabPane;
@@ -40,7 +41,92 @@ class Expand extends React.Component {
             </div>
         );
     }
-} 
+}
+
+class ColorTag extends React.Component {
+    state = {
+        editing:false,
+        textChanged:false,
+        colorChanged:false,
+        currentText:( is.string(this.props.text) ) ? this.props.text : inter.untag ,
+        currentColor:( is.string(this.props.color) ) ? this.props.color : "#d9d9d9" ,
+        colorMenuOpening:false,
+        shouldUpdate:false
+    }
+    afterChange = () => {
+        // todo: dispatch to backend
+        console.log(this.state.currentText);
+        console.log(this.state.currentColor);
+    }
+    afterBlur = () => {
+        let update = (this.state.textChanged || this.state.colorChanged)
+        this.setState({editing:false,shouldUpdate:update},this.afterChange);
+    }
+    onTagClick = () => {
+        this.setState({editing:true},()=>{ this.refs.input.focus(); });
+    }
+    onInputBlur = () => {
+        if (this.state.colorMenuOpening) {
+            return
+        }      
+        setTimeout(this.afterBlur,100);     
+    }
+    onInputChange = (e) => {
+        this.setState({textChanged:true,currentText:e.target.value});
+    }
+    onColorSelect = ({item, key, keyPath}) => {
+        this.setState({colorChanged:true,currentColor:key});
+    }
+    colorMenuOpen = (status) => {
+        this.setState({colorMenuOpening:status});
+    }
+    render() {
+        let text = this.state.currentText;
+        let color = this.state.currentColor;
+        let editMenu = (onMenuClick) => {
+            return(
+                <Menu onClick={onMenuClick} >
+                    <Menu.Item key="pink" >
+                        <Tag color="pink" style={{width:"56px",textAlign:"center"}} >pink</Tag>
+                    </Menu.Item>
+                    <Menu.Item key="red" >
+                        <Tag color="red" style={{width:"56px",textAlign:"center"}} >red</Tag>
+                    </Menu.Item>
+                    <Menu.Item key="orange" >
+                        <Tag color="orange" style={{width:"56px",textAlign:"center"}} >orange</Tag>
+                    </Menu.Item>
+                    <Menu.Item key="green" >
+                        <Tag color="green" style={{width:"56px",textAlign:"center"}} >green</Tag>
+                    </Menu.Item>
+                    <Menu.Item key="cyan" >
+                        <Tag color="cyan" style={{width:"56px",textAlign:"center"}} >cyan</Tag>
+                    </Menu.Item>
+                    <Menu.Item key="blue" >
+                        <Tag color="blue" style={{width:"56px",textAlign:"center"}} >blue</Tag>
+                    </Menu.Item>
+                    <Menu.Item key="purple" >
+                        <Tag color="purple" style={{width:"56px",textAlign:"center"}} >purple</Tag>
+                    </Menu.Item>
+                </Menu>
+            );
+        }
+        const colorSelector = () => {
+            return (
+                <Dropdown ref="dropdown" overlay={editMenu(this.onColorSelect)} trigger={["hover"]}>
+                    <Icon type="skin" onMouseOver={()=>{this.colorMenuOpen(true)}} onMouseOut={()=>{this.colorMenuOpen(false)}} />
+                </Dropdown>
+            );
+        }
+        return (
+            <div>
+                {!this.state.editing && <Tag ref="tag" color={color} onClick={this.onTagClick} ><span hidden={!this.state.shouldUpdate}><Icon type="loading" spin={true} style={{margin:"0 8px 0 0"}}/></span>{text}</Tag>}
+                {this.state.editing && 
+                    <Input ref="input" defaultValue={text} onChange={this.onInputChange} style={{width:"76px"}} size="small" onBlur={this.onInputBlur} suffix={colorSelector()}/>
+                }
+            </div>
+        );
+    }
+}
 
 const Action = (action) => {
     if (is.not.array(action) || action.length==0) {
@@ -96,7 +182,7 @@ class ProjectContent extends React.Component {
             {title:inter.version,key:"_version",dataIndex:"_version"},
             {title:inter.packTime,key:"packTime",dataIndex:"packTime"},
             {title:inter.status,key:"_status",dataIndex:"_status"},
-            {title:inter.tag,key:"_tag",dataIndex:"_tag"},
+            {title:inter.tag,key:"_tag",dataIndex:"_tag",width:"300px"},
             {title:inter.action,key:"_action",dataIndex:"_action",width:"120px"}
         ];
         const wrapData = (value,index) => {
@@ -120,6 +206,7 @@ class ProjectContent extends React.Component {
             }
             v._status = (is.propertyDefined(v,"status")) ? wrapStatus[v.status] : wrapStatus["undefined"];
             
+            v._tag = <ColorTag color={v.tag && v.tag.color} text={v.tag && v.tag.text} />;
 
             v._action = (is.propertyDefined(v,"action") && is.array(v.action)) ? Action(v.action) : "";
             return v;
@@ -141,9 +228,10 @@ class ProjectContent extends React.Component {
 
 export default ProjectContent;
 
+
 let mockVersions = [
     {version:"1.0.123",packTime:"2017-07-27 13:04:05",status:"success",action:["build","download","download"]},
-    {version:"1.1.234",packTime:"2017-07-28 13:04:05",status:"failed",action:["download","build"]},
+    {version:"1.1.234",packTime:"2017-07-28 13:04:05",status:"failed",action:["download","build"],tag:{color:"red",text:"不可用"}},
     {version:"1.2.102",packTime:"2017-07-29 13:04:05",status:"building",action:["download"]},
     {version:"1.3.113",packTime:"2017-07-30 13:04:05",status:"success",action:["download"]},
     {version:"1.4.1223",packTime:"2017-07-31 13:04:05",status:"new",action:["download"]},
