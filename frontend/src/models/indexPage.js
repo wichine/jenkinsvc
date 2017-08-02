@@ -1,5 +1,5 @@
 import { notification } from 'antd';
-import { getProjects,addProject } from '../services/projects.js';
+import { getProjects,addProject } from '../services/index.js';
 import is from 'is_js';
 
 export default {
