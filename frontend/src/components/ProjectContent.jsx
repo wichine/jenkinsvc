@@ -36,7 +36,7 @@ class Expand extends React.Component {
         loading:false,
         currentTab:"description",
         editMode:false,
-        text:"test"//this.props.description
+        text:this.props.description
     }
     onSwitch = (key) => {
         this.setState({currentTab:key});
@@ -49,7 +49,8 @@ class Expand extends React.Component {
         this.props.dispatch({type:"projectPage/submitVersionInfo",info:this.getEditedInfo()});
     }
     onEditCancel = () => {
-        this.setState({editMode:false});
+        this.setState({editMode:false,text:this.props.description});
+        this.refs.jobTable.CancelEdit();
     }
     onTextChange = (e) => {
         this.setState({text:e.target.value});
@@ -111,7 +112,7 @@ class Expand extends React.Component {
                     </TabPane>
                     <TabPane tab={inter.testcase} key="testcase">
                         <Spin spinning={this.state.loading}>
-                        <JobTable ref="jobTable" editMode={this.state.editMode} data={this.props.testcase} />
+                        <JobTable ref="jobTable" editMode={this.state.editMode} data={this.props.testcase} jobs={this.props.jenkinsJobs} />
                         </Spin>
                     </TabPane>
                 </Tabs>
@@ -168,7 +169,7 @@ const Action = (action) => {
 class ProjectContent extends React.Component {
     expandRender = (record) => {
         return (
-            <Expand {...record} dispatch={this.props.dispatch} />
+            <Expand {...record} dispatch={this.props.dispatch} jenkinsJobs={this.props.jenkinsJobs} />
         );
     }
     render() {

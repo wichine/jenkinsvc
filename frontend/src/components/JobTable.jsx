@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table,Button } from 'antd';
+import { Table,Button,Dropdown,Input,Select,Icon } from 'antd';
 
 import is from 'is_js';
 
@@ -7,11 +7,15 @@ const inter = {
     "jobName":"任务名",
     "description":"描述",
     "result":"执行结果",
-    "action":"操作"
+    "action":"操作",
+    "newJob":"新增",
+    "clickToAdd":"点击选择Jenkins任务...",
+    "getJobsFailed":"获取Jenkins任务失败...",
+    "inputDescription":"输入任务描述..."
 }
 
 const normalColumns = [
-    {title:inter.jobName,key:"jobName",dataIndex:"jobName"},
+    {title:inter.jobName,key:"_jobName",dataIndex:"_jobName"},
     {title:inter.description,key:"description",dataIndex:"description"},
     {title:inter.result,key:"result",dataIndex:"result",width:"80px"},
 ];
@@ -22,10 +26,15 @@ const editColumn = [
 
 class JobTable extends React.Component {
     state = {
-        editedData:[]
+        editedData:[],
+        newJobDescription:"",
+        newJobName:""
     }
     componentDidMount() {
         this.setState({editedData:[...this.props.data]});
+    }
+    CancelEdit() {
+        this.setState({editedData:[...this.props.data],newJobDescription:"",newJobName:""});
     }
     GetEditedData = () => {
         return this.state.editedData;
@@ -33,11 +42,13 @@ class JobTable extends React.Component {
     wrapData = (value,index,array) => {
         let v = {...value};
         v.key = index;
+        v._jobName = <span><img src="static/headshot.png" alt="" height="15px" /><span style={{margin:"0 0 0 8px",fontWeight:600}}>{v.jobName}</span></span>
         return v
     }
     wrapEditData = (value,index,array) => {
         let v = {...value};
         v.key = index;
+        v._jobName = <span><img src="static/headshot.png" alt="" height="15px" /><span style={{margin:"0 0 0 8px",fontWeight:600}}>{v.jobName}</span></span>
         v._action = (
             <span>
                 { (index > 0) ? <Button ref="btn" onClick={()=>{this.moveUp(index)}} size="small" icon="caret-up" style={{color:"#00a854",borderColor:"#00a854",margin:"0 2px"}} shape="circle"  ghost /> : "" }
@@ -71,11 +82,41 @@ class JobTable extends React.Component {
         moveAfter.splice(index,1);
         this.setState({editedData:[...moveAfter]});
     }
+    getJobs = () => {
+        const wrapJobItem = (value,index) => {
+            return <Select.Option key={index} value={value.name} >{value.name}</Select.Option>
+        };
+        if (is.not.array(this.props.jobs)) {
+            return [];
+        }
+        return this.props.jobs.map(wrapJobItem)
+    }
+    onAddJobClick = () => {
+        this.setState({jobNameCheckfailed:(this.state.newJobName==""),jobDescCheckfailed:(this.state.newJobDescription=="")});
+        if (is.not.empty(this.state.newJobName) && is.not.empty(this.state.newJobDescription)) {
+            let editedData = this.state.editedData;
+            editedData.splice(0,0,{jobName:this.state.newJobName,description:this.state.newJobDescription})
+            this.setState({editedData:[...editedData]});
+        }
+    }
+    onNewJobDescChanged = (e) => {
+        this.setState({newJobDescription:e.target.value}); 
+    }
+    onNewJobSelect = (v) => {
+        this.setState({newJobName:v});
+    }
     render() {
         let editMode = this.props.editMode;
         let columns = editMode ? [...normalColumns,...editColumn] : normalColumns ;
         let data = this.props.data.map(this.wrapData);
         let editedData = this.state.editedData.map(this.wrapEditData);
+        editedData.splice(0,0,{
+            _jobName:(<Select onChange={this.onNewJobSelect} placeholder={inter.clickToAdd} style={{ width:200,border:"1px dashed" }} notFoundContent={<div><Icon type="frown-o" style={{color:"#f04134",margin:"0 8px"}} />{inter.getJobsFailed}</div>} >{this.getJobs()}</Select>),
+            description:(<Input onChange={this.onNewJobDescChanged} style={{ width:200,border:"1px dashed" }} placeholder={inter.inputDescription} />),
+            _action:(<Button type="dashed" size="default" icon="plus" onClick={this.onAddJobClick} >{inter.newJob}</Button>),
+            key:-1
+        });
+
 
         return (
             <Table 

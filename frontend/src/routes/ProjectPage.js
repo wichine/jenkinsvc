@@ -36,7 +36,7 @@ function ProjectPage(props) {
 
       <Content className={styles.content}>
         <Row type="flex" justify="center" align="middle" style={{height:"100%"}}>
-          <ProjectContent dispatch={props.dispatch}/>
+          <ProjectContent {...props} />
         </Row>
       </Content>
 
