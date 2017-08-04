@@ -1,4 +1,5 @@
 import React from 'react';
+import { routerRedux } from 'dva/router';
 import { Card, Col, Row, Button, Icon } from 'antd';
 
 import IconSvg from './IconSvg'
@@ -34,13 +35,14 @@ const ColorfulCard = (props) => {
 
 
 class IndexContent extends React.Component {
-    onClick = () => {
-        console.log("clicked");
+    onClick = (value) => {
+        this.props.dispatch({type:"projectPage/fetchVersions",projectName:value.title});
+        this.props.dispatch(routerRedux.push("/project"));
     };
     wrapContent = (value,index) => {
         const colors = ["cyan","purple","yellow","green","red","blue","pink","orange"];
         return (
-            <Row key={index} style={{padding:"8px 0",cursor:"pointer"}} onClick={this.onClick} >
+            <Row key={index} style={{padding:"8px 0",cursor:"pointer"}} onClick={()=>{this.onClick(value)}} >
                 <Col span={24}>
                     <ColorfulCard 
                         title = {value.title ? value.title : ""}

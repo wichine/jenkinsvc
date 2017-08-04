@@ -28,7 +28,8 @@ let mockVersions = [
     {id:6,version:"1.4.1223",packTime:"2017-07-31 13:04:05",action:["download"]}
 ];
 
-export async function getVersions() {
+export async function getVersions(projectName) {
+  console.log(projectName);
   return mockVersions;
 }
 

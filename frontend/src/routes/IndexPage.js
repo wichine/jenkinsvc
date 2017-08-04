@@ -40,7 +40,7 @@ function IndexPage(props) {
 
       <Content className={styles.content}>
         <Row type="flex" justify="center" align="middle" style={{height:"100%"}}>
-          <IndexContent data={dataDisplay}/>
+          <IndexContent data={dataDisplay} dispatch={props.dispatch}/>
         </Row>
       </Content>
 

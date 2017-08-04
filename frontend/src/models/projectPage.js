@@ -8,7 +8,10 @@ export default {
   namespace: 'projectPage',
 
   state: {
-    jenkinsJobs:[]
+    jenkinsJobs:[],
+    versions:[],
+    loading:false,
+    projectName:"Project"
   },
 
   subscriptions: {
@@ -24,21 +27,29 @@ export default {
         yield put({ type: "refresh" });
       }
     },
-    *fetchJenkinsJobs({payload},{call,put}) {
+    *fetchJenkinsJobs({payload},{call,put,select}) {
       let jobs = yield call(getJobs);
       if (is.array(jobs)) {
         yield put({type:"refreshJobs",jobs:jobs});
       }
+    },
+    *fetchVersions({projectName},{call,put,select}) {
+      yield put({type:"refreshing",projectName:projectName});
+      let versions = yield call(getVersions,projectName);
+      yield put({type:"refresh",versions:versions});
     }
   },
 
   reducers: {
-    refresh(state, {payload}) {
+    refresh(state, {versions}) {
       // console.log("refresh");
-      return { ...state };
+      return { ...state,versions:[...versions],loading:false};
     },
     refreshJobs(state,{jobs}) {
       return { ...state,jenkinsJobs:[...jobs]}
+    },
+    refreshing(state,{projectName}) {
+      return { ...state,loading:true,projectName:projectName };
     }
   },
 

@@ -60,7 +60,7 @@ class JobTable extends React.Component {
         v._action = (
             <span>
                 { (index > 0) ? <Button ref="btn" onClick={()=>{this.moveUp(index)}} size="small" icon="caret-up" style={{color:"#00a854",borderColor:"#00a854",margin:"0 2px"}} shape="circle"  ghost /> : "" }
-                { (index != array.length-1) ? <Button onClick={()=>{this.moveDown(index)}} size="small" icon="caret-down" style={{color:"#7265e6",borderColor:"#7265e6",margin:"0 2px"}} shape="circle" ghost /> : "" }
+                { (index != array.length-1) ? <Button onClick={()=>{this.moveDown(index)}} size="small" icon="caret-down" style={{color:"#108ee9",borderColor:"#108ee9",margin:"0 2px"}} shape="circle" ghost /> : "" }
                 <Button onClick={()=>{this.deleteRow(index)}} size="small" icon="delete" style={{color:"#f04134",borderColor:"#f04134",margin:"0 2px"}} shape="circle" ghost />
             </span>
         );
