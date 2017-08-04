@@ -31,7 +31,6 @@ class JobTable extends React.Component {
         newJobName:"",
         jobNameCheckfailed:false,
         jobDescCheckfailed:false
-
     }
     componentDidMount() {
         this.setState({editedData:[...this.props.data]});
@@ -105,7 +104,7 @@ class JobTable extends React.Component {
         if (is.not.empty(this.state.newJobName) && is.not.empty(this.state.newJobDescription)) {
             let editedData = this.state.editedData;
             editedData.splice(0,0,{jobName:this.state.newJobName,description:this.state.newJobDescription})
-            this.setState({editedData:[...editedData]});
+            this.setState({editedData:[...editedData],newJobName:"",newJobDescription:""});
         }
     }
     onNewJobDescChanged = (e) => {
@@ -120,8 +119,21 @@ class JobTable extends React.Component {
         let data = this.props.data.map(this.wrapData);
         let editedData = this.state.editedData.map(this.wrapEditData);
         editedData.splice(0,0,{
-            _jobName:(<Select onChange={this.onNewJobSelect} placeholder={inter.clickToAdd} style={{ width:200,border:(this.state.jobNameCheckfailed ? "2px dashed #f04134" : "1px dashed") }} notFoundContent={<div><Icon type="frown-o" style={{color:"#f04134",margin:"0 8px"}} />{inter.getJobsFailed}</div>} >{this.getJobs()}</Select>),
-            description:(<Input onChange={this.onNewJobDescChanged} style={{ height:32,width:200,border:(this.state.jobDescCheckfailed ? "2px dashed #f04134" : "1px dashed") }} placeholder={inter.inputDescription} />),
+            _jobName:(
+                <Select 
+                mode="combobox"
+                onChange={this.onNewJobSelect} 
+                placeholder={inter.clickToAdd} 
+                value={this.state.newJobName} 
+                showSearch={true}
+                dropdownMatchSelectWidth={false}
+                style={{ width:200,border:(this.state.jobNameCheckfailed ? "2px dashed #f04134" : "1px dashed") }} 
+                notFoundContent={<div><Icon type="frown-o" style={{color:"#f04134",margin:"0 8px"}} />{inter.getJobsFailed}</div>} 
+                filterOption={(input,option)=>option.props.value.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                >
+                    {this.getJobs()}
+                </Select>),
+            description:(<Input value={this.state.newJobDescription} onChange={this.onNewJobDescChanged} style={{ width:200,border:(this.state.jobDescCheckfailed ? "2px dashed #f04134" : "1px dashed") }} placeholder={inter.inputDescription} />),
             _action:(<Button type="dashed" size="default" icon="plus" onClick={this.onAddJobClick} >{inter.newJob}</Button>),
             key:-1
         });
