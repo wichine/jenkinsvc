@@ -4,6 +4,7 @@ import { routerRedux } from 'dva/router';
 import { Layout, Row, Col, Input, Button, Icon, Spin } from 'antd';
 import IconSvg from '../components/IconSvg';
 import ProjectContent from '../components/ProjectContent';
+import NewVersionModal from '../components/NewVersionModal'
 
 import styles from './ProjectPage.less';
 
@@ -16,13 +17,15 @@ const inter = {
 
 function ProjectPage(props) {
   const onAddNewClicked = () => {
-    console.log("add new clicked!");
+    // console.log("add new clicked!");
+    props.dispatch({type:"projectPage/showAddModal",show:true});
   };
   const gotoMain = () => {
     props.dispatch(routerRedux.push("/"));
   };
   return (
     <div>
+    <NewVersionModal show={props.showAddNew} dispatch={props.dispatch} key={new Date()} />
     <Layout style={{height:"100%"}}>
       <Header className={styles.header}>
         <Row>

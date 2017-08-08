@@ -43,3 +43,16 @@ export async function submit(versionInfo) {
   }
   return [];
 }
+
+
+export async function newVersion(version) {
+  // return "add new error"
+  let v = { ...mockVersions[0] };
+  v.id = v.id - 1;
+  v.version = version.versionId;
+  v.description = version.description;
+  v.packTime = "";
+  v.status = "";
+  mockVersions.splice(0,0,v);
+  return mockVersions;
+}
