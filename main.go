@@ -1,11 +1,12 @@
 package main
 
 import (
-	_ "jenkinsvc/routers"
 	"github.com/astaxie/beego"
+	"jenkinsvc/models"
+	_ "jenkinsvc/routers"
 )
 
 func main() {
+	models.InitDB()
 	beego.Run()
 }
-
