@@ -10,4 +10,7 @@ func init() {
 	beego.Router("/", &controllers.MainController{})
 	beego.Router("/jenkins/getjobs", &controllers.JenkinsController{}, "get:GetJobs")
 	beego.Router("/jenkins/calljob", &controllers.JenkinsController{}, "post:CallJob")
+
+	beego.Router("/api/getprojects", &controllers.ApiController{}, "get:GetProjects")
+	beego.Router("/api/addproject", &controllers.ApiController{}, "post:AddProject")
 }

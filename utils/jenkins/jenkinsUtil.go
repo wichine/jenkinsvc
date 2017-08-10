@@ -5,6 +5,7 @@ import (
 	// "fmt"
 	"github.com/astaxie/beego"
 	// "github.com/astaxie/beego/httplib"
+	"fmt"
 	"github.com/astaxie/beego/logs"
 	"github.com/bndr/gojenkins"
 	"jenkinsvc/models"
@@ -16,7 +17,6 @@ var (
 )
 
 func init() {
-	var err error
 	userid := beego.AppConfig.String("jenkins::userid")
 	if userid == "" {
 		panic(`userid not set in [jenkins] section!`)
@@ -29,13 +29,22 @@ func init() {
 	if host == "" {
 		panic(`host not set in [jenkins] section!`)
 	}
+
+	go initJenkins(host, userid, token)
+}
+
+func initJenkins(host, userid, token string) {
+	var err error
 	jenkins, err = gojenkins.CreateJenkins(host, userid, token).Init()
 	if err != nil {
-		panic(err.Error())
+		logs.Error(err.Error())
 	}
 }
 
 func GetJobs() ([]*models.Job, error) {
+	if jenkins == nil {
+		return nil, fmt.Errorf("jenkins init failed")
+	}
 	_jobs, err := jenkins.GetAllJobs()
 	if err != nil {
 		logs.Error(err)
@@ -52,6 +61,9 @@ func GetJobs() ([]*models.Job, error) {
 }
 
 func CallJob(jobName string) error {
+	if jenkins == nil {
+		return fmt.Errorf("jenkins init failed")
+	}
 	_, err := jenkins.BuildJob(jobName)
 	if err != nil {
 		logs.Error(err)
